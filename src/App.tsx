@@ -13,6 +13,7 @@ function App() {
   const [exercise, setExercise] = useState<ExerciseParameters["kind"]>();
 
   // override view state
+  // TODO: routing solution
   const [view, setView] = useState<null | "midi">(null);
 
   const shouldShowMidiMapping =
@@ -41,9 +42,9 @@ function App() {
           {midiInput && !shouldShowMidiMapping && (
             <Button
               onClick={() => setView("midi")}
-              className="absolute w-20 top-10 left-80 ml-5"
+              className="absolute w-20 top-12 left-80 ml-5 bg-default-100"
             >
-              MIDI Map
+              Remap
             </Button>
           )}
 

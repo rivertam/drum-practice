@@ -15,6 +15,7 @@ module.exports = {
   plugins: [
     nextui({
       layout: {}, // common layout options
+      addCommonColors: true,
     }),
   ],
 };

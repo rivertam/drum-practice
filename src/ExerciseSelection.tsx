@@ -29,6 +29,7 @@ export function ExerciseSelection({
       <Select
         label="Which exercise do you want to practice?"
         className="max-w-xs"
+        color="default"
         items={[{ value: "bass rotation", label: "Bass Rotation" }]}
         onChange={(e) => {
           setSelectedExercise(e.target.value as ExerciseParameters["kind"]);
