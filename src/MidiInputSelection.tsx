@@ -40,7 +40,7 @@ export function MidiInputSelection({
     <div className={divClass}>
       <Select
         label="Select your MIDI device"
-        className="max-w-xs"
+        className="max-w-xs h-20"
         onOpenChange={setOpenChange}
         items={midiDevices as Array<{ id: string; name: string }>}
         onChange={(e) => {
