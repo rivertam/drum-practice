@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ExerciseParameters } from "./ExerciseParameters";
 import { Select, SelectItem } from "@nextui-org/react";
+
+import { ExerciseParameters } from "./ExerciseParameters";
 
 export function ExerciseSelection({
   onExerciseSelected,

@@ -24,6 +24,24 @@ export function MidiInputSelection({
     MIDIInput | undefined
   >();
 
+  // use localstorage to automatically set the MIDI input on mount
+  useEffect(() => {
+    const storedInput = localStorage.getItem("midiInput");
+
+    // if user previously set a midi input but has yet to open the select,
+    // automatically request MIDI devices
+    if (storedInput && !midiAccess) {
+      setOpenChange(true);
+      return;
+    }
+
+    const foundDevice = midiDevices.find((input) => input.id === storedInput);
+
+    if (foundDevice) {
+      setSelectedMidiDevice(foundDevice as MIDIInput);
+    }
+  }, [midiAccess, midiDevices]);
+
   useEffect(() => {
     onMidiSelected(selectedMidiDevice);
   }, [selectedMidiDevice, onMidiSelected]);
@@ -43,6 +61,9 @@ export function MidiInputSelection({
         className="max-w-xs h-20"
         onOpenChange={setOpenChange}
         items={midiDevices as Array<{ id: string; name: string }>}
+        selectedKeys={[selectedMidiDevice?.id].filter((a): a is string =>
+          Boolean(a),
+        )}
         onChange={(e) => {
           const device = midiDevices.find(
             (device): device is MIDIInput =>
@@ -50,6 +71,12 @@ export function MidiInputSelection({
           );
 
           setSelectedMidiDevice(device);
+
+          if (device) {
+            localStorage.setItem("midiInput", device.id);
+          } else {
+            localStorage.removeItem("midiInput");
+          }
         }}
       >
         {(device) => (
