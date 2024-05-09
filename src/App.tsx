@@ -34,6 +34,8 @@ function App() {
               midiInput={midiInput}
               onChange={(map) => {
                 setMidiMapping(map);
+              }}
+              onDone={() => {
                 setView((view) => (view === "midi" ? null : view));
               }}
             />

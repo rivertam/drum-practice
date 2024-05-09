@@ -42,17 +42,25 @@ const NOTE_MEANINGS = {
 export function MidiMapping({
   midiInput,
   onChange,
+  onDone,
 }: {
   midiInput: MIDIInput;
   onChange: (map: MidiMap) => void;
+  onDone: () => void;
 }) {
-  const [midiMap, setMidiMap] = useState<MidiMap>({} as MidiMap);
+  const [midiMap, setMidiMap] = useState<MidiMap>(() => {
+    return JSON.parse(localStorage.getItem("midiMap") ?? "{}");
+  });
 
   const invertedMidiMap = invertMidiMap(midiMap);
 
   const [remappingDrum, setRemappingDrum] = useState<Drum | undefined>();
 
   const isValid = isMidiMapComplete(midiMap);
+
+  useEffect(() => {
+    localStorage.setItem("midiMap", JSON.stringify(midiMap));
+  }, [isValid, midiMap]);
 
   const [midiNotes, setMidiNotes] = useState<
     Array<{
@@ -125,6 +133,8 @@ export function MidiMapping({
             className="w-20 inline-block h-10"
             onClick={() => {
               setMidiMap(midiMap);
+
+              onDone();
             }}
           >
             Done
