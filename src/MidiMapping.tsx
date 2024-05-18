@@ -9,9 +9,9 @@ import {
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
-export const Drums = ["bass", "snare", "ride"] as const;
+export const Drums = { bass: "bass", snare: "snare", ride: "ride" } as const;
 
-export type Drum = (typeof Drums)[number];
+export type Drum = (typeof Drums)[keyof typeof Drums];
 
 export type MidiMap = Record<Drum, number>;
 
@@ -156,9 +156,9 @@ export function MidiMapping({
             <TableColumn className="w-20 text-center">MIDI #</TableColumn>
           </TableHeader>
           <TableBody>
-            {Drums.map((drum) => (
-              <TableRow key={drum}>
-                <TableCell>{drum}</TableCell>
+            {Object.entries(Drums).map(([key, drum]) => (
+              <TableRow key={key}>
+                <TableCell>{key}</TableCell>
                 <TableCell>
                   {(() => {
                     if (remappingDrum === drum) {
