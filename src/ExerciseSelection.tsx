@@ -10,11 +10,24 @@ export function ExerciseSelection({
     exercise: ExerciseParameters["kind"] | undefined,
   ) => void;
 }) {
-  const [selectedExercise, setSelectedExercise] =
-    useState<ExerciseParameters["kind"]>();
+  const [selectedExercise, setSelectedExercise] = useState<
+    ExerciseParameters["kind"]
+  >(() => {
+    return (
+      (localStorage.getItem(
+        "selectedExercise",
+      ) as ExerciseParameters["kind"]) ?? undefined
+    );
+  });
 
   useEffect(() => {
     onExerciseSelected(selectedExercise);
+
+    if (selectedExercise) {
+      localStorage.setItem("selectedExercise", selectedExercise);
+    } else {
+      localStorage.removeItem("selectedExercise");
+    }
   }, [selectedExercise]);
 
   let divClass = "absolute w-72 ";
@@ -32,6 +45,7 @@ export function ExerciseSelection({
         className="max-w-xs"
         color="default"
         items={[{ value: "bass rotation", label: "Bass Rotation" }]}
+        selectedKeys={[selectedExercise]}
         onChange={(e) => {
           setSelectedExercise(e.target.value as ExerciseParameters["kind"]);
         }}

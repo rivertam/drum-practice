@@ -1,4 +1,4 @@
-type TimeSignature = { top: 4; bottom: 4 };
+import { TimeSignature } from "./score";
 
 export type BassRotation = {
   kind: "bass rotation";
