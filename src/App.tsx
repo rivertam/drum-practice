@@ -6,6 +6,7 @@ import { MidiInputSelection } from "./MidiInputSelection";
 import { ExerciseSelection } from "./ExerciseSelection";
 import { ExerciseParameters } from "./ExerciseParameters";
 import { MidiMap, MidiMapping, isMidiMapComplete } from "./MidiMapping";
+import { BassRotationPlayer } from "./exercises/BassRotation";
 
 function App() {
   const [midiInput, setMidiInput] = useState<MIDIInput>();
@@ -53,6 +54,14 @@ function App() {
           {!shouldShowMidiMapping && midiInput && (
             <ExerciseSelection onExerciseSelected={setExercise} />
           )}
+
+          {(() => {
+            switch (exercise) {
+              case "bass rotation": {
+                return <BassRotationPlayer />;
+              }
+            }
+          })()}
         </div>
       </NextUIProvider>
     </React.StrictMode>

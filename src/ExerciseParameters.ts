@@ -1,8 +1,3 @@
-import { TimeSignature } from "./score";
+import { BassRotationExercise } from "./exercises/BassRotation";
 
-export type BassRotation = {
-  kind: "bass rotation";
-  timeSignature: TimeSignature;
-};
-
-export type ExerciseParameters = BassRotation;
+export type ExerciseParameters = BassRotationExercise;
