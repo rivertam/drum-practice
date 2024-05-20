@@ -11,6 +11,13 @@ export class BassRotationScore implements Score {
     offset: 0,
   };
 
+  public getTimeSignature(): TimeSignature {
+    return {
+      top: 4,
+      bottom: 4,
+    };
+  }
+
   private typicalBeat(): Beat {
     return {
       notes: [
