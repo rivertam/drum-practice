@@ -12,7 +12,7 @@ export type Beat = {
 };
 
 export interface Score {
-  getTimeSignature(): TimeSignature;
+  getTimeSignature(): Readonly<TimeSignature>;
 
   getBeats(): Generator<Beat>;
 }

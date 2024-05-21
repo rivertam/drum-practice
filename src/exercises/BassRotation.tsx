@@ -6,16 +6,18 @@ import { Player } from "../player";
 const ANY_VELOCITY = { min: 0, max: 127 };
 
 export class BassRotationScore implements Score {
+  private timeSignature: TimeSignature = {
+    top: 4,
+    bottom: 4,
+  };
+
   public currentBassSpot = {
     beat: 1,
     offset: 0,
   };
 
-  public getTimeSignature(): TimeSignature {
-    return {
-      top: 4,
-      bottom: 4,
-    };
+  public getTimeSignature(): Readonly<TimeSignature> {
+    return this.timeSignature;
   }
 
   private typicalBeat(): Beat {

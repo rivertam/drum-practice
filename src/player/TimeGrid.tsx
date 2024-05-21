@@ -38,14 +38,17 @@ export function TimeGrid({
         style={{ transform: `translateY(-${pixelOffset}px)` }}
       >
         {new Array(signature.top * 3).fill(null).map((_, index) => {
+          const beat = nextBeat + index - signature.top;
           return (
             <div
-              key={index}
+              key={beat}
               style={{
                 transform: `translateY(${distanceBetweenTicks * (signature.top - index)}px)`,
               }}
               className="absolute w-full h-0.5 bg-gray-500 top-3/4"
-            />
+            >
+              {beat}
+            </div>
           );
         })}
       </div>
