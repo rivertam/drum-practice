@@ -17,7 +17,7 @@ export type MidiMap = Record<Drum, number>;
 
 export type InvertedMidiMap = Record<number, Drum>;
 
-function invertMidiMap(map: MidiMap): InvertedMidiMap {
+export function invertMidiMap(map: MidiMap): InvertedMidiMap {
   return Object.fromEntries(
     Object.entries(map).map(([drum, note]) => [note, drum as Drum]),
   );

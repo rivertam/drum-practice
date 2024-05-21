@@ -7,6 +7,7 @@ import { ExerciseSelection } from "./ExerciseSelection";
 import { ExerciseParameters } from "./ExerciseParameters";
 import { MidiMap, MidiMapping, isMidiMapComplete } from "./MidiMapping";
 import { BassRotationPlayer } from "./exercises/BassRotation";
+import { MidiInput } from "./MidiInput";
 
 function App() {
   const [midiInput, setMidiInput] = useState<MIDIInput>();
@@ -23,46 +24,48 @@ function App() {
   return (
     <React.StrictMode>
       <NextUIProvider>
-        <div className="flex items-center justify-center h-screen w-full">
-          <MidiInputSelection
-            onMidiSelected={(input) => {
-              setMidiInput(input);
-            }}
-          />
-
-          {midiInput && shouldShowMidiMapping && (
-            <MidiMapping
-              midiInput={midiInput}
-              onChange={(map) => {
-                setMidiMapping(map);
-              }}
-              onDone={() => {
-                setView((view) => (view === "midi" ? null : view));
+        <MidiInput.Provider value={{ input: midiInput, mapping: midiMapping }}>
+          <div className="flex items-center justify-center h-screen w-full">
+            <MidiInputSelection
+              onMidiSelected={(input) => {
+                setMidiInput(input);
               }}
             />
-          )}
 
-          {midiInput && !shouldShowMidiMapping && (
-            <Button
-              onClick={() => setView("midi")}
-              className="absolute w-20 top-12 left-80 ml-5 bg-default-100"
-            >
-              Remap
-            </Button>
-          )}
+            {midiInput && shouldShowMidiMapping && (
+              <MidiMapping
+                midiInput={midiInput}
+                onChange={(map) => {
+                  setMidiMapping(map);
+                }}
+                onDone={() => {
+                  setView((view) => (view === "midi" ? null : view));
+                }}
+              />
+            )}
 
-          {!shouldShowMidiMapping && midiInput && (
-            <ExerciseSelection onExerciseSelected={setExercise} />
-          )}
+            {midiInput && !shouldShowMidiMapping && (
+              <Button
+                onClick={() => setView("midi")}
+                className="absolute w-20 top-12 left-80 ml-5 bg-default-100"
+              >
+                Remap
+              </Button>
+            )}
 
-          {(() => {
-            switch (exercise) {
-              case "bass rotation": {
-                return <BassRotationPlayer />;
+            {!shouldShowMidiMapping && midiInput && (
+              <ExerciseSelection onExerciseSelected={setExercise} />
+            )}
+
+            {(() => {
+              switch (exercise) {
+                case "bass rotation": {
+                  return <BassRotationPlayer />;
+                }
               }
-            }
-          })()}
-        </div>
+            })()}
+          </div>
+        </MidiInput.Provider>
       </NextUIProvider>
     </React.StrictMode>
   );

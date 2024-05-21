@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Beat, Score } from "../score";
 import { TimeGrid } from "./TimeGrid";
-import { Drums } from "../MidiMapping";
 import { BeatView } from "./Beat";
+import { PauseMenu } from "./PauseMenu";
 
 export function Player({ score }: { score: Score }) {
   const [generator] = useState(() => score.getBeats());
@@ -101,9 +101,13 @@ export function Player({ score }: { score: Score }) {
         {/* Current time line */}
         <div className="absolute w-full h-0.5 bg-blue-500 top-3/4"></div>
 
-        <div className="absolute top-0" onClick={() => setPlaying((p) => !p)}>
-          {playing ? "Pause" : "Play"}
-        </div>
+        {playing ? (
+          <div className="absolute top-0" onClick={() => setPlaying(false)}>
+            Pause
+          </div>
+        ) : (
+          <PauseMenu onUnpause={() => setPlaying(true)} />
+        )}
       </div>
     </div>
   );
