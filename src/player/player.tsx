@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Beat, Score } from "../score";
 import { TimeGrid } from "./TimeGrid";
 import { Drums } from "../MidiMapping";
+import { BeatView } from "./Beat";
 
 export function Player({ score }: { score: Score }) {
   const [generator] = useState(() => score.getBeats());
@@ -87,35 +88,14 @@ export function Player({ score }: { score: Score }) {
           />
 
           {beatsToDisplay.map((beat) => {
-            const beats = new Array<React.ReactNode>();
-
-            beat.notes.forEach((note) => {
-              let className = "absolute w-1/3 h-0.5 top-3/4 ";
-
-              if (note.drum === Drums.bass) {
-                className += "bg-blue-500 left-0";
-              } else if (note.drum === Drums.snare) {
-                className += "bg-red-500 left-1/3";
-              } else if (note.drum === Drums.ride) {
-                className += "bg-yellow-500 left-2/3";
-              }
-              beats.push(
-                <div
-                  key={`${beat.beatNumber}-${note.offset}-${note.drum}`}
-                  className={className}
-                  style={{
-                    transform: `translateY(${
-                      distanceBetweenTicks *
-                      (nextBeat - beat.beatNumber - note.offset)
-                    }px)`,
-                  }}
-                >
-                  {beat.beatNumber}
-                </div>,
-              );
-            });
-
-            return beats;
+            return (
+              <BeatView
+                key={beat.beatNumber}
+                beat={beat}
+                distanceBetweenTicks={distanceBetweenTicks}
+                nextBeat={nextBeat}
+              />
+            );
           })}
         </div>
         {/* Current time line */}
