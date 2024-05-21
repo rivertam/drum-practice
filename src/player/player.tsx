@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { Score } from "../score";
+import { useEffect, useRef, useState } from "react";
+import { Beat, Score } from "../score";
 import { TimeGrid } from "./TimeGrid";
+import { Drums } from "../MidiMapping";
 
 export function Player({ score }: { score: Score }) {
   const [generator] = useState(() => score.getBeats());
@@ -34,18 +35,95 @@ export function Player({ score }: { score: Score }) {
     };
   }, [playing]);
 
+  const timeSignature = score.getTimeSignature();
+
+  const [beatsToDisplay, setBeatsToDisplay] = useState<Array<Beat>>([]);
+
+  const divRef = useRef<HTMLDivElement>(null);
+  const divHeight = divRef.current?.clientHeight ?? 0;
+
+  const distanceBetweenTicks = divHeight / (timeSignature.top * 2);
+
+  // fractional beats since start
+  const beatsSinceStart = (bpm / 60 / 1000) * milliseconds + 1;
+  // the next beat integer
+  const nextBeat = Math.ceil(beatsSinceStart);
+
+  const pixelOffset = Math.round(
+    (nextBeat - beatsSinceStart) * distanceBetweenTicks,
+  );
+
+  useEffect(() => {
+    const newBeats = new Array<Beat>();
+    do {
+      newBeats.push(generator.next().value);
+    } while (
+      newBeats[newBeats.length - 1].beatNumber <
+      nextBeat + timeSignature.top * 3
+    );
+
+    setBeatsToDisplay((beats) =>
+      // add new beats
+      [...beats, ...newBeats]
+        // remove beats that are too far in the past
+        .filter(({ beatNumber }) => beatNumber >= nextBeat - timeSignature.top),
+    );
+  }, [nextBeat, timeSignature]);
+
   return (
     <div className="w-1/2 max-w-screen-sm bg-green-300 h-full max-h-fit m-0 overflow-hidden relative">
-      <TimeGrid
-        milliseconds={milliseconds}
-        bpm={bpm}
-        signature={score.getTimeSignature()}
-      />
-      {/* Current time line */}
-      <div className="absolute w-full h-0.5 bg-blue-500 top-3/4"></div>
+      {/* Overall canvas */}
+      <div ref={divRef} className="w-full h-full">
+        {/* Moving "canvas" based around current time line*/}
+        <div
+          className="w-full h-full"
+          style={{ transform: `translateY(-${pixelOffset}px)` }}
+        >
+          <TimeGrid
+            className="absolute top-3/4"
+            distanceBetweenTicks={distanceBetweenTicks}
+            nextBeat={nextBeat}
+            signature={timeSignature}
+          />
 
-      <div className="absolute top-0" onClick={() => setPlaying((p) => !p)}>
-        {playing ? "Pause" : "Play"}
+          {beatsToDisplay.map((beat) => {
+            const beats = new Array<React.ReactNode>();
+
+            beat.notes.forEach((note) => {
+              let className = "absolute w-1/3 h-0.5 top-3/4 ";
+
+              if (note.drum === Drums.bass) {
+                className += "bg-blue-500 left-0";
+              } else if (note.drum === Drums.snare) {
+                className += "bg-red-500 left-1/3";
+              } else if (note.drum === Drums.ride) {
+                className += "bg-yellow-500 left-2/3";
+              }
+              beats.push(
+                <div
+                  key={`${beat.beatNumber}-${note.offset}-${note.drum}`}
+                  className={className}
+                  style={{
+                    transform: `translateY(${
+                      distanceBetweenTicks *
+                      (nextBeat - beat.beatNumber - note.offset)
+                    }px)`,
+                  }}
+                >
+                  {beat.beatNumber}
+                </div>,
+              );
+            });
+
+            return beats;
+          })}
+        </div>
+        {/* Current time line */}
+        <div className="absolute w-full h-0.5 bg-blue-500 top-3/4"></div>
+
+        <div className="absolute top-0" onClick={() => setPlaying((p) => !p)}>
+          {playing ? "Pause" : "Play"}
+        </div>
       </div>
     </div>
   );

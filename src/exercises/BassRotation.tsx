@@ -20,8 +20,9 @@ export class BassRotationScore implements Score {
     return this.timeSignature;
   }
 
-  private typicalBeat(): Beat {
+  private typicalBeat(beatNumber: number): Beat {
     return {
+      beatNumber,
       notes: [
         {
           offset: 0,
@@ -38,11 +39,12 @@ export class BassRotationScore implements Score {
   }
 
   public *getBeats(): Generator<Beat> {
+    let beatNumber = 1;
     while (true) {
-      const beat1 = this.typicalBeat();
+      const beat1 = this.typicalBeat(beatNumber++);
       yield beat1;
 
-      const beat2 = this.typicalBeat();
+      const beat2 = this.typicalBeat(beatNumber++);
       beat2.notes.push({
         offset: 0,
         drum: Drums.snare,
@@ -50,16 +52,16 @@ export class BassRotationScore implements Score {
       });
       yield beat2;
 
-      const beat3 = this.typicalBeat();
+      const beat3 = this.typicalBeat(beatNumber++);
       yield beat3;
 
-      const beat4 = this.typicalBeat();
+      const beat4 = this.typicalBeat(beatNumber++);
       beat4.notes.push({
         offset: 0,
         drum: Drums.snare,
         velocity: ANY_VELOCITY,
       });
-      yield beat2;
+      yield beat4;
     }
   }
 }
